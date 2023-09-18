@@ -15,6 +15,8 @@ Création des fichier :
 
 Configuration du script `dev` dans le fichier `server\package.json` pour lancer le serveur avec la commande `npm run dev`
 
+## Bug du moment
+
 Cependant en lançant le serveur je rencontre une premiere erreur
 
 ```bash
