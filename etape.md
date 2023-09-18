@@ -21,7 +21,7 @@ Cependant en démarrant le serveur je rencontre une premiere erreur
 error TS5109: Option 'moduleResolution' must be set to 'NodeNext' (or left unspecified) when option 'module' is set to 'NodeNext'.
 ```
 
-Pour résoudre cet erreur j'ai1 créé le fichier `server\tsconfig.json` pour annulé l'erreur grace a cette ligne de code
+Pour résoudre cet erreur j'ai créé le fichier `server\tsconfig.json` pour annuler l'erreur grace à cette ligne de code
 `"moduleResolution": "Node",`
 
 Et ensuite quand je lance `npm run dev` j'ai une nouvelle erreur qui est survenue.
