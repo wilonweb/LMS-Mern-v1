@@ -3,6 +3,10 @@
 Cours du tuto Becodemy
 [part 1](https://www.youtube.com/watch?v=kf6yyxMck8Y&t=834s)
 
+## Commande
+
+lancé le serveur : `npm run dev`
+
 ## Project Overview
 
 On vas créer un LMS fullStack et on vas aborder :
