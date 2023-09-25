@@ -89,3 +89,17 @@ typescript : Le compilateur TypeScript pour la prise en charge de TypeScript dan
 Ces packages sont essentiels pour développer une application Node.js sécurisée avec Express.js, en utilisant TypeScript et en interagissant avec des bases de données MongoDB et Redis.
 
 Création du serveur
+
+## Database, Cloudinary, Redis connection
+
+On vas voir comment configurer une BDD et stocker les images avec Cloudinary et la mise en cache avec Redis dans Node.js
+
+importer les dependances
+
+définir les variables d'environnement
+
+fonctions pour se connecter a MongoDb et Redis
+
+gestion des erreur
+
+Le caching avec Redis pour la gestion de l'authentification

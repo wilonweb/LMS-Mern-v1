@@ -6,11 +6,32 @@ Installation des dépendances `npm i bcryptjs cookie-parser cors dotenv express 
 
 Création des fichiers :
 
+`tsc --init` pour créer le fichier tsconfig.ts
+
 - **app.ts** : importation du module express et exportation de app.ts vers server.ts
 - **server.ts** : Création du serveur
 - **.env** : Contient les variable d'environnement
 
 Configuration du script `dev` dans le fichier `server\package.json` pour lancer le serveur avec la commande `npm run dev`
+
+## Database, Cloudinary, Redis connection
+
+Création des routes
+MongoDb
+Cloudinary
+Upstash
+
+On configure la BDD avec Cloudinary pour stocker les image et la mise en cache avec Redis dans Node.js
+
+importer les dependances
+
+définir les variables d'environnement
+
+fonctions pour se connecter a MongoDb et Redis
+
+gestion des erreur
+
+Le caching avec Redis pour la gestion de l'authentification
 
 ## Erreur rencontré
 
