@@ -31,12 +31,22 @@ On créer un dossier `utils` fonctions pour se connecter a MongoDb et Redis
 
 On utilise MongoDb en local pour éviter le temps de connection quand on utilise la version cloud de mongoDb
 
-J'ai donc installer mongoDb
-Créer une database avec
-database name : Lms-v1
-collection name : Lms-v1
+J'ai donc installé mongoDb <br>
+Créer une database avec :
 
-Et j'ai changé `DB_URL` dans mes variable d'environnement dans `.env`
+- database name : Lms-v1
+- collection name : Lms-v1
+
+Et j'ai changé `DB_URL` dans mes variable d'environnement dans `.env` pour :
+`DB_URL = 'mongodb://localhost:27017/Lms-v1'`
+
+Cependant j'ai une erreur quand je me connecte
+
+```bash
+[INFO] 13:24:24 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.1, typescript ver. 5.2.2)
+Server is connected with port 8050
+connect ECONNREFUSED ::1:27017
+```
 
 ## Erreur rencontré
 
