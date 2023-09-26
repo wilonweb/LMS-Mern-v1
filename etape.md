@@ -16,26 +16,20 @@ Configuration du script `dev` dans le fichier `server\package.json` pour lancer 
 
 ## Database, Cloudinary, Redis connection
 
-Création des routes
-MongoDb
-Cloudinary
-Upstash
+MongoDb : Pour stocker les data <br>
+Cloudinary : Pour stocker les images <br>
+Upstash : Pour ??? <br>
+Redis : Pour la mise en cache <br>
 
 On configure la BDD avec Cloudinary pour stocker les image et la mise en cache avec Redis dans Node.js
 
-importer les dependances
+On définis les variables d'environnement dans un fichier `.env`
 
-définir les variables d'environnement
-
-fonctions pour se connecter a MongoDb et Redis
-
-gestion des erreur
-
-Le caching avec Redis pour la gestion de l'authentification
+On créer un dossier `utils` fonctions pour se connecter a MongoDb et Redis
 
 ## Backend error handling
 
-On utilise MongoDb en local pour éviter le temps de connection quand on utilise la version en ligne.
+On utilise MongoDb en local pour éviter le temps de connection quand on utilise la version cloud de mongoDb
 
 J'ai donc installer mongoDb
 Créer une database avec
