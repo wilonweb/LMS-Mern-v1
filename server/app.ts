@@ -7,10 +7,10 @@ import cors from "cors";
 
 export const app = express();
 
-// body parser
+// body parser : gere les donnée JSON envoyé via HTTP en s'assurant que la taille des données ne dépasse pas 50Mo pour éviter les porbleme de performance ou de sécurité
 app.use(express.json({ limit: "50mb" }));
 
-//cookie parser
+//cookie parser : Pour gerer les cookies
 app.use(cookieParser());
 
 // => cors => cross origin ressource sharing
@@ -28,7 +28,7 @@ app.get("/test", (req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-// unknow route
+// unknow route : Pour envoyer une erreur 404
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
   const err = new Error(`Route ${req.originalUrl} not found`) as any;
   err.statusCode = 404;

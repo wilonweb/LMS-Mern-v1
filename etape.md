@@ -33,18 +33,24 @@ gestion des erreur
 
 Le caching avec Redis pour la gestion de l'authentification
 
+## Backend error handling
+
+On utilise MongoDb en local pour éviter le temps de connection quand on utilise la version en ligne.
+
+J'ai donc installer mongoDb
+Créer une database avec
+database name : Lms-v1
+collection name : Lms-v1
+
+Et j'ai changé `DB_URL` dans mes variable d'environnement dans `.env`
+
 ## Erreur rencontré
 
-Cependant en démarrant le serveur je rencontre une premiere erreur
+Quand je me connecte avec `npm run dev`
+La console me répond :
 
-```bash
-[ERROR] 17:24:08 ⨯ Unable to compile TypeScript:
-error TS5109: Option 'moduleResolution' must be set to 'NodeNext' (or left unspecified) when option 'module' is set to 'NodeNext'.
 ```
-
-Pour résoudre cet erreur j'ai créé le fichier `server\tsconfig.json` pour annuler l'erreur grace à cette ligne de code
-`"moduleResolution": "Node",`
-
-Et ensuite quand je lance `npm run dev` j'ai une nouvelle erreur qui est survenue.
-`Error: listen EACCES: permission denied 5000;`
-J'ai tenté différent port mais l'erreur persiste ...
+[INFO] 13:24:24 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.1, typescript ver. 5.2.2)
+Server is connected with port 8050
+connect ECONNREFUSED ::1:27017
+```

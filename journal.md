@@ -92,14 +92,18 @@ Création du serveur
 
 ## Database, Cloudinary, Redis connection
 
-On vas voir comment configurer une BDD et stocker les images avec Cloudinary et la mise en cache avec Redis dans Node.js
+Configuration et connection de la BDD avec
+MongoDb;
+Cloudinary pour stocker les image
+Redis pour la mise en cache avec Redis
+et upstash : ( Pourquoi utiliser upstash ) ? Est ce pour accelerer la distributions de data avec mongoDb ?
 
-importer les dependances
+## Backend error handling
 
-définir les variables d'environnement
+La gestion des erreur dans une pplication
 
-fonctions pour se connecter a MongoDb et Redis
+Installer mongoDb en local pour eviter les probleme de connections. Mise en place d'un systeme de gestion d'erreur
 
-gestion des erreur
+La classe `errorHandler`pour mentionné les erreur avec un code d'etat HTTP sera basé sur la POO en utilisant un constructeur
 
-Le caching avec Redis pour la gestion de l'authentification
+middleware personalisé `errorMiddleWare` pour gerer les erreur de maniere coherentes.
