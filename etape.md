@@ -31,30 +31,23 @@ On créer un dossier `utils` fonctions pour se connecter a MongoDb et Redis
 
 On utilise MongoDb en local pour éviter le temps de connection quand on utilise la version cloud de mongoDb
 
-J'ai donc installé mongoDb <br>
-Créer une database avec :
+Ensuite on créer le code pour gerer les erreur et rendre le code maintenable
 
-- database name : Lms-v1
-- collection name : Lms-v1
+creation de `server\utils\ErrorHandler.ts` contenant la classe `ErrorHandler` permettant de créer des objet d'erreur personalisé
 
-Et j'ai changé `DB_URL` dans mes variable d'environnement dans `.env` pour :
-`DB_URL = 'mongodb://localhost:27017/Lms-v1'`
+Creation du dossier `server\middleware\`
 
-Cependant j'ai une erreur quand je me connecte
+Puis du fichier `server\middleware\error.ts` pour gerer divers type d'erreurs et envoyer des reponse d'erreur coherente aux clients avec un statut et un message
 
-```bash
-[INFO] 13:24:24 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.1, typescript ver. 5.2.2)
-Server is connected with port 8050
-connect ECONNREFUSED ::1:27017
-```
+Et de `server\middleware\catchAsyncError.ts` pour gerer les erreurs asynchrone qui se produise
+
+`server\utils\redis.ts` Configuration d'une instance de Redis qui genere une erreur si l'url n'est pas confoguré dans les variable d'environnement.
+
+## User Model Design
+
+Nous créons un model utilisateur destinée a etre utilisé dans le cadre de la festion des utilisateur et de l'authentification
+
+Création du dossier `server\models`
+et du fichier `server\models\user.model.ts` pour définir un model de donnée pour les utilisateur avec le hachage pour crypter le mot de passe, et une methode pour comparer les mot de passe lors d'une autentification utilisateurs.
 
 ## Erreur rencontré
-
-Quand je me connecte avec `npm run dev`
-La console me répond :
-
-```
-[INFO] 13:24:24 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.1, typescript ver. 5.2.2)
-Server is connected with port 8050
-connect ECONNREFUSED ::1:27017
-```

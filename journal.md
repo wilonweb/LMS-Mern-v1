@@ -100,10 +100,10 @@ et upstash : ( Pourquoi utiliser upstash ) ? Est ce pour accelerer la distributi
 
 ## Backend error handling
 
-La gestion des erreur dans une pplication
+La gestion des erreur dans une application
 
-Installer mongoDb en local pour eviter les probleme de connections. Mise en place d'un systeme de gestion d'erreur
+La classe `ErrorHandler`pour mentionné les erreur avec un code d'etat HTTP sera basé sur la POO en utilisant un constructeur
 
-La classe `errorHandler`pour mentionné les erreur avec un code d'etat HTTP sera basé sur la POO en utilisant un constructeur
+On utilise la methode super() pour appeler le constructor de la class parent.
 
 middleware personalisé `errorMiddleWare` pour gerer les erreur de maniere coherentes.
