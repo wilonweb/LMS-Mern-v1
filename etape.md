@@ -53,7 +53,15 @@ et une methode pour comparer les mot de passe lors d'une autentification utilisa
 
 ## User Registration
 
-creation de `server\controllers\user.controller.ts`
+Nous allons créer la fonction controlleur permetant d'enregistrer un nouvel utilisateur.
+
+creation de `server\controllers\user.controller.ts` pour gerer les utilisateur.
+on y importe
+dotenv : pour l'utilisation de variable d'environnement.
+express : pour communiquer avec le serveur
+jsonwebtoken : pour créer un token d'activation
+ejs :  
+path :
 
 installation de
 
@@ -61,5 +69,9 @@ installation de
 - npm i nodemailer + npm i --save-dev @types/nodemailer
 
 creation de `server\mails\activation-mail.ejs`
+
+creation de `server\controllers\user.controller.ts`
+
+creation de `server\routes\user.routes.ts`
 
 ## Erreur rencontré

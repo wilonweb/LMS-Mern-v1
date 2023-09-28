@@ -107,3 +107,19 @@ La classe `ErrorHandler`pour mentionné les erreur avec un code d'etat HTTP sera
 On utilise la methode super() pour appeler le constructor de la class parent.
 
 middleware personalisé `errorMiddleWare` pour gerer les erreur de maniere coherentes.
+
+## User Registration
+
+J'ai appris ce qu'est le protocole SMTP Simple Mail Transfer Protocol
+PS étudier le protocole SMTP pour connaitre les différentes variable nécéssaire a sa configuration et les protocole d'entré et sortie.
+
+Le point d'interrogation (?) dans TypeScript est utilisé pour indiquer qu'une propriété est facultative dans une interface ou un type.
+
+Dans typeScript `:` est une annotations de type typeScript pour indiquer le type de donnée attendu
+exemple :
+
+- string
+- any
+- interface ( on met le nom de l'interface attendu )
+  ...
+  PS ecrire un article sur tout les type typeScript.
