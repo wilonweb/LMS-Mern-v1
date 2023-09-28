@@ -60,7 +60,7 @@ on y importe
 dotenv : pour l'utilisation de variable d'environnement.
 express : pour communiquer avec le serveur
 jsonwebtoken : pour créer un token d'activation
-ejs :  
+ejs : moteur de template pour créer un email de confirmation
 path :
 
 installation de
@@ -68,10 +68,13 @@ installation de
 - npm i ejs + npm i --save-dev @types/ejs
 - npm i nodemailer + npm i --save-dev @types/nodemailer
 
-creation de `server\mails\activation-mail.ejs`
+creation de `server\mails\activation-mail.ejs` qui contient le template du mail a envoyer a un utilisateur pour confirmer son inscription
 
-creation de `server\controllers\user.controller.ts`
+creation de `server\controllers\user.controller.ts` Gere l'inscription utilsiateur en verifiant si l'email existe deja,
+créer un token,
+envoi un email de confirmation
+renvoi une reponse en fonction du resultat de l'inscription
 
-creation de `server\routes\user.routes.ts`
+creation de `server\routes\user.routes.ts`avec la route `userRouter.post("/registration", registrationUser);` pour activer la fonctionalité `user.controller.ts`
 
 ## Erreur rencontré

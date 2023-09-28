@@ -27,9 +27,8 @@ interface IRegistrationBody {
   avatar?: string;
 }
 
-/* Gestionnaire de routage pour les demandes d'inscriptions utilisateur 
+/* Gestionnaire de routage pour les demandes d'inscriptions utilisateur */
 
-*/
 export const registrationUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
