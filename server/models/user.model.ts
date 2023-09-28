@@ -6,70 +6,77 @@ import { time } from "console";
 const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+s/;
 
 export interface IUser extends Document {
-    name: string;
-    email: string;
-    password: string;
-    avatar:{
-        public_id: string:
-        url: string;
-    },
-    role:string;
-    isVerified: boolean;
-    courses: Array<{courseId: string}>;
-    comparePassword: (password: string) => Promise<boolean>;
+  name: string;
+  email: string;
+  password: string;
+  avatar: {
+    public_id: string;
+    url: string;
+  };
+  role: string;
+  isVerified: boolean;
+  courses: Array<{ courseId: string }>;
+  comparePassword: (password: string) => Promise<boolean>;
 }
 
-const userSchema: Schema<IUser> = new mongoose.Schema({
-    name:{
-        type: 'string',
-        required: [true, "Please enter your name"],
+const userSchema: Schema<IUser> = new mongoose.Schema(
+  {
+    name: {
+      type: "string",
+      required: [true, "Please enter your name"],
     },
-    email:{
-        type: 'string',
-        required: [true, "Please enter your email"],
-        validate: {
-            validator: function (value: string) {
-                return emailRegexPattern.test(value);
-            },
-            message: "Please enter a valid email"
+    email: {
+      type: "string",
+      required: [true, "Please enter your email"],
+      validate: {
+        validator: function (value: string) {
+          return emailRegexPattern.test(value);
         },
-        unique:true,
+        message: "Please enter a valid email",
+      },
+      unique: true,
     },
     password: {
-        type:String,
-        required: [true, "Please enter your password"],
-        minLength:[6, "Password must be at least 6 characters"],
-        select: false,
+      type: String,
+      required: [true, "Please enter your password"],
+      minLength: [6, "Password must be at least 6 characters"],
+      select: false,
     },
-    avatar:{
-        public_id: String,
-        url: String,
+    avatar: {
+      public_id: String,
+      url: String,
     },
     role: {
-        type:String,
-        default:"user",
+      type: String,
+      default: "user",
     },
-    isVerified:{
-        type:Boolean,
-        default: false,
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
-    courses:[{
+    courses: [
+      {
         courseId: String,
-    }],
-},{timestamps:true});
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 // Hash password before using
-userSchema.pre<IUser>('save', async function(next){
-    if(!this.isModified('password')){
-        next();
-    }
-    this.password = await bcrypt.hash(this.password, 10);
+userSchema.pre<IUser>("save", async function (next) {
+  if (!this.isModified("password")) {
     next();
+  }
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
 // compare password
-userSchema.methods.comparePassword = async function(enteredPassword:string): Promise<boolean>{
-    return await this.password.compare(enteredPassword, this.password);
+userSchema.methods.comparePassword = async function (
+  enteredPassword: string
+): Promise<boolean> {
+  return await this.password.compare(enteredPassword, this.password);
 };
 
 const userModel: Model<IUser> = mongoose.model("User", userSchema);

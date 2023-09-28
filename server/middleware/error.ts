@@ -11,13 +11,13 @@ export const ErrorMiddleware = (
   err.statusCode = err.statusCode || 500;
   err.message = err.message || "Internal Server error";
 
-  // wrong mondoDb id error
+  // wrong mondoDb id error "CastError" ( quand une data est convertit dans un format incompatible )
   if (err.name === "CastError") {
     const message = `Resource not found. Invalid ${err.path}`;
     err = new ErrorHandler(message, 400);
   }
 
-  // Duplicate key Error
+  // Duplicate key Error ( pour respecter les contraintes d'unicité en cas de valeur double dans mongodb )
   if (err.code === 11000) {
     const message = `Duplicate ${Object.keys(err.keyValue)} entered`;
     err = new ErrorHandler(message, 400);

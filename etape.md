@@ -45,9 +45,21 @@ Et de `server\middleware\catchAsyncError.ts` pour gerer les erreurs asynchrone q
 
 ## User Model Design
 
-Nous créons un model utilisateur destinée a etre utilisé dans le cadre de la festion des utilisateur et de l'authentification
+Nous créons un model utilisateur destinée à être utilisé dans le cadre de la gestion des utilisateurs et de l'authentification
 
-Création du dossier `server\models`
-et du fichier `server\models\user.model.ts` pour définir un model de donnée pour les utilisateur avec le hachage pour crypter le mot de passe, et une methode pour comparer les mot de passe lors d'une autentification utilisateurs.
+Création du dossier `server\models`et du fichier `server\models\user.model.ts` pour définir un model de donnée pour les utilisateur
+avec le hachage pour crypter le mot de passe,
+et une methode pour comparer les mot de passe lors d'une autentification utilisateurs.
+
+## User Registration
+
+creation de `server\controllers\user.controller.ts`
+
+installation de
+
+- npm i ejs + npm i --save-dev @types/ejs
+- npm i nodemailer + npm i --save-dev @types/nodemailer
+
+creation de `server\mails\activation-mail.ejs`
 
 ## Erreur rencontré

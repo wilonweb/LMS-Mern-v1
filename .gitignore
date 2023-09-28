@@ -1,0 +1,5 @@
+# Ignorer le fichier .env
+.env
+
+# Ignorer un répertoire appelé "logs"
+logs/
