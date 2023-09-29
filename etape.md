@@ -79,4 +79,6 @@ creation de `server\routes\user.routes.ts`avec la route `userRouter.post("/regis
 
 ## activate user
 
+toto
+
 ## Erreur rencontré
