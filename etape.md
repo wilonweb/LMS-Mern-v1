@@ -77,4 +77,6 @@ renvoi une reponse en fonction du resultat de l'inscription
 
 creation de `server\routes\user.routes.ts`avec la route `userRouter.post("/registration", registrationUser);` pour activer la fonctionalité `user.controller.ts`
 
+## activate user
+
 ## Erreur rencontré

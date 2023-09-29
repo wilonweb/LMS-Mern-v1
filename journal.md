@@ -1,3 +1,8 @@
+J'apprécie ce tutoriel un peu plus que les tutoriel "code" que j'ai fait jusqu'a présent car l'auteur :
+
+- mentionne les extenssion qu'il utilise avant de commencer le tuto ( ce qui m'a permis d'apprendre des terme comme intellisense par exemple )
+- parle des imports qui s'ajoute automatiquement dans le composant.
+
 # LMS MERN V1
 
 Cours du tuto Becodemy

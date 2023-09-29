@@ -3,7 +3,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import { time } from "console";
 
-const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+s/;
+const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export interface IUser extends Document {
   name: string;
