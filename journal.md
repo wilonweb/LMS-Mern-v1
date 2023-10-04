@@ -3,6 +3,16 @@ J'apprécie ce tutoriel un peu plus que les tutoriel "code" que j'ai fait jusqu'
 - mentionne les extenssion qu'il utilise avant de commencer le tuto ( ce qui m'a permis d'apprendre des terme comme intellisense par exemple )
 - parle des imports qui s'ajoute automatiquement dans le composant.
 
+### Octobre 2023
+
+Aujourd'hui je revois la notion de **destructuring** que l'on peut utilisé pour destructuré les clé d'un objet ou les élément d'un tableau afin de pouvoir les utilisé comme variable dans une fonctions.
+
+Les models definissent la structure des donnée, interagisse avec la base de donnée.
+
+Les controlleurs sont responsable de la gestion des interaction entre le client et les models qui sont déclenché par des fonctions en réponse a des actions utilisateur ou des routes spécifique.
+
+Ils utilisent les models pour faire des operation sur les donnée et retourne une reponse au client avec du JSON, HTML, etc.
+
 # LMS MERN V1
 
 Cours du tuto Becodemy

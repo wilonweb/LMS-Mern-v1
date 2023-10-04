@@ -77,8 +77,154 @@ renvoi une reponse en fonction du resultat de l'inscription
 
 creation de `server\routes\user.routes.ts`avec la route `userRouter.post("/registration", registrationUser);` pour activer la fonctionalité `user.controller.ts`
 
-## activate user
+## user activation
 
-toto
+On créer l'activation de l'utilisateur, ou l'utilisateur recevra un code c'activation via le protocol SMTP qui sera associé a sont JWT afin d'ajouter une fonctionalité qui s'assurera que l'activation est valide.
+
+On code cette fonctionalité `server\controllers\user.controller.ts`
+
+Et on utilise Postman pour envoyer des requete. On
+
+## User Login LogOut
+
+Dans cette section on met en place un systeme d'authentification avec des token d'acces et de rafraichissement.
+
+Création des variable d'environnement
+
+- ACCESS_TOKEN
+- REFRESH_TOKEN
+
+Puis on genere un password sur lastpass.com et on entre un password different pour chaque variable.
+
+et on ajoute ces variables dans l'interface IUser du `server\models\user.model.ts` pour les rendre disponible ces methodes a tout objet utilisateur
+
+```js
+SignAccessToken: () => string; // Génère un Token d'acces pour authentifier l'utilisateur de courte durée
+SignRefreshToken: () => string; // Génère un Token de rafraichissement pour en obtenir un nouveau apres expiration du token actuel
+```
+
+Le fonctionnement de ses methodes est définis dans les méthodes `SignAccessToken` et `SignRefreshToken` toujours dans le fichier `server\models\user.model.ts`
+
+```js
+// sign access token
+userSchema.methods.SignAccessToken = function () {
+  return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN || "");
+};
+
+// sign refresh token
+userSchema.methods.SignRefreshToken = function () {
+  return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || "");
+};
+```
+
+Ajout de Login User dans `server\controllers\user.controller.ts` pour authentifier l'utilisateur en validant son email et son password.
+
+```js
+// Login User
+interface ILoginRequest {
+    email: string;
+    password: string;
+}
+
+export const loginUser = CatchAsyncError(async(req:Request,res:Response,next:NextFunction) => {
+    try {
+        const {email,password}= req.body as ILoginRequest;
+
+        if(!email || !password){
+            return next(new ErrorHandler("Invalid email or password", 400))
+        };
+
+        const user = await UserModel.findOne({email}).select("+password");
+
+        if(!user){
+            return next(new ErrorHandler("Invalid email or password", 400));
+        }
+
+        const isPasswordMatch = await user.comparePassword(password);
+        if(!isPasswordMatch){
+            return next(new ErrorHandler("Invalid email or password", 400));
+        }
+
+    }
+
+        catch (error:any) {
+            return next(new ErrorHandler(error.message, 400));
+        }
+});
+
+```
+
+Création de `server\utils\jwt.ts`
+
+```js
+require("dotenv").config();
+
+import { IUser } from "../models/user.model";
+import { Response } from "express";
+import { redis } from "./redis";
+
+interface ITokenOptions {
+  expires: Date;
+  maxAge: number;
+  httpOnly: boolean;
+  sameSite: "lax" | "strict" | "none" | undefined;
+  secure?: boolean;
+}
+
+export const sendToken = (user: IUser, statusCode: number, res: Response) => {
+  const accessToken = user.SignAccessToken();
+  const refreshToken = user.SignRefreshToken();
+
+  // upload session to Redis
+  redis.set(user._id, JSON.stringify(user) as any);
+
+  // parse environement variable to integrate with fallback value
+  const accessTokenExpire = parseInt(
+    process.env.ACCESS_TOKEN_EXPIRE || "300",
+    10
+  );
+  const refreshTokenExpire = parseInt(
+    process.env.REFRESH_TOKEN_EXPIRE || "1200",
+    10
+  );
+
+  // option for cookie
+  const accessTokenOptions: ITokenOptions = {
+    expires: new Date(Date.now() + accessTokenExpire * 1000),
+    maxAge: accessTokenExpire * 1000,
+    httpOnly: true,
+    sameSite: "lax",
+  };
+
+  const refreshTokenOptions: ITokenOptions = {
+    expires: new Date(Date.now() + refreshTokenExpire * 1000),
+    maxAge: accessTokenExpire * 1000,
+    httpOnly: true,
+    sameSite: "lax",
+  };
+
+  // only set secure to true in production
+  if (process.env.NODE_ENV === "production") {
+    accessTokenOptions.secure = true;
+  }
+
+  res.cookie("access_token", accessToken, accessTokenOptions);
+  res.cookie("refresh_token", refreshToken, refreshTokenOptions);
+
+  res.status(statusCode).json({
+    success: true,
+    user,
+    accessToken,
+  });
+};
+
+```
+
+Ajout des variable d'environnement `ACCESS_TOKEN_EXPIRE = 5 REFRESH_TOKEN_EXPIRE = 59` pour ...
+
+Importer la route `userRouter.post("/login", loginUser);`
+dans `server\routes\user.routes.ts`
+
+Question Pkoi dans l'interface ITokenOptions dans l'interface jwt.ts quand je place secure en dernier j'ai une erreur que je n'ai pas en el placant en premier.
 
 ## Erreur rencontré
