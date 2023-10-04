@@ -96,7 +96,7 @@ Création des variable d'environnement
 
 Puis on genere un password sur lastpass.com et on entre un password different pour chaque variable.
 
-et on ajoute ces variables dans l'interface IUser du `server\models\user.model.ts` pour les rendre disponible ces methodes a tout objet utilisateur
+et on ajoute ces variables dans l'interface IUser du `server\models\user.model.ts` pour les rendre disponible à tout objet utilisateur que l'application rencontre
 
 ```js
 SignAccessToken: () => string; // Génère un Token d'acces pour authentifier l'utilisateur de courte durée
@@ -122,39 +122,56 @@ Ajout de Login User dans `server\controllers\user.controller.ts` pour authentifi
 ```js
 // Login User
 interface ILoginRequest {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
-
-export const loginUser = CatchAsyncError(async(req:Request,res:Response,next:NextFunction) => {
+// Exporte la fonction loginUser en tant que middleware pour gérer les demandes de connexion d'utilisateur
+export const loginUser = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {email,password}= req.body as ILoginRequest;
+      // Extraction des valeurs d'email et de mot de passe à partir du corps de la demande (req.body)
+      const { email, password } = req.body as ILoginRequest;
+      // Vérification si email ou mot de passe est manquant
+      if (!email || !password) {
+        // Si l'un des champs est manquant, génère une erreur 400 (Bad Request) avec un message d'erreur
+        return next(new ErrorHandler("Invalid email or password", 400));
+      }
 
-        if(!email || !password){
-            return next(new ErrorHandler("Invalid email or password", 400))
-        };
+      // Recherche d'un utilisateur dans la base de données par son adresse e-mail
+      const user = await userModel.findOne({ email }).select("+password");
 
-        const user = await UserModel.findOne({email}).select("+password");
+      // Si aucun utilisateur est trouvé
+      if (!user) {
+        // Si aucun utilisateur n'est trouvé, génère une erreur 400 avec un message d'erreur
+        return next(new ErrorHandler("Invalid email or password", 400));
+      }
 
-        if(!user){
-            return next(new ErrorHandler("Invalid email or password", 400));
-        }
+      // Vérification si le mot de passe fourni correspond au mot de passe stocké pour cet utilisateur
+      const isPasswordMatch = await user.comparePassword(password);
+      if (!isPasswordMatch) {
+        // Si les mots de passe ne correspondent pas, génère une erreur 400 avec un message d'erreur
+        return next(new ErrorHandler("Invalid email or password", 400));
+      }
 
-        const isPasswordMatch = await user.comparePassword(password);
-        if(!isPasswordMatch){
-            return next(new ErrorHandler("Invalid email or password", 400));
-        }
-
+      // Si tout est correct jusqu'à présent, envoie un token à l'utilisateur
+      sendToken(user, 200, res);
+    } catch (error: any) {
+      // Gestion des erreurs : Si une erreur inattendue se produit, génère une erreur 400 avec le message d'erreur de l'exception
+      return next(new ErrorHandler(error.message, 400));
     }
-
-        catch (error:any) {
-            return next(new ErrorHandler(error.message, 400));
-        }
-});
-
+  }
+);
 ```
 
-Création de `server\utils\jwt.ts`
+Création de `server\utils\jwt.ts` pour créer la fonction `sendToken` pour envoyer des token à l'utilisateur apres une autjentification réussi.
+
+Les etapes pour le faire sont :
+
+- généré un **accesToken** et un **refreshToken** grace aux methode **SignAccesToken** et **SignRefreshToken**
+- enregistrer la session utilisateur dans redis
+- configurer les cookie des token ( durée de validité, environnement de production ... )
+- configurer les cookie acces_token et refresh_token
+- Renvoi une réponse JSON au client HTTP avec un code 200 pour connectioni réussi
 
 ```js
 require("dotenv").config();
@@ -163,22 +180,25 @@ import { IUser } from "../models/user.model";
 import { Response } from "express";
 import { redis } from "./redis";
 
+// Interface définissant les options pour les cookies des tokens
 interface ITokenOptions {
   expires: Date;
   maxAge: number;
   httpOnly: boolean;
   sameSite: "lax" | "strict" | "none" | undefined;
-  secure?: boolean;
+  secure?: boolean; // Propriété optionnelle avec le ?
 }
 
+// Fonction pour envoyer des tokens à l'utilisateur
 export const sendToken = (user: IUser, statusCode: number, res: Response) => {
+  // Génère un token d'accès et un token de rafraîchissement à partir de l'utilisateur
   const accessToken = user.SignAccessToken();
   const refreshToken = user.SignRefreshToken();
 
-  // upload session to Redis
+  // Enregistre la session utilisateur dans Redis
   redis.set(user._id, JSON.stringify(user) as any);
 
-  // parse environement variable to integrate with fallback value
+  // Parse les variables d'environnement pour configurer la durée de validité des tokens (en secondes)
   const accessTokenExpire = parseInt(
     process.env.ACCESS_TOKEN_EXPIRE || "300",
     10
@@ -188,7 +208,7 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
     10
   );
 
-  // option for cookie
+  // Options pour le cookie du token d'accès
   const accessTokenOptions: ITokenOptions = {
     expires: new Date(Date.now() + accessTokenExpire * 1000),
     maxAge: accessTokenExpire * 1000,
@@ -196,6 +216,7 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
     sameSite: "lax",
   };
 
+  // Options pour le cookie du token de rafraîchissement
   const refreshTokenOptions: ITokenOptions = {
     expires: new Date(Date.now() + refreshTokenExpire * 1000),
     maxAge: accessTokenExpire * 1000,
@@ -203,28 +224,27 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
     sameSite: "lax",
   };
 
-  // only set secure to true in production
+  // Définit la propriété "secure" à true uniquement en production (pour les cookies sécurisés)
   if (process.env.NODE_ENV === "production") {
     accessTokenOptions.secure = true;
   }
 
+  // Configure les cookies avec les tokens et leurs options respectives
   res.cookie("access_token", accessToken, accessTokenOptions);
   res.cookie("refresh_token", refreshToken, refreshTokenOptions);
 
+  // Envoie une réponse JSON avec un code de statut spécifié, indiquant le succès de l'opération
   res.status(statusCode).json({
     success: true,
     user,
     accessToken,
   });
 };
-
 ```
 
-Ajout des variable d'environnement `ACCESS_TOKEN_EXPIRE = 5 REFRESH_TOKEN_EXPIRE = 59` pour ...
+Ajout des variable d'environnement `ACCESS_TOKEN_EXPIRE = 5 REFRESH_TOKEN_EXPIRE = 59` pour configurer la validité des TOKEN sans avoir a modifier le code source. ( fléxibilité et sécurité )
 
 Importer la route `userRouter.post("/login", loginUser);`
-dans `server\routes\user.routes.ts`
-
-Question Pkoi dans l'interface ITokenOptions dans l'interface jwt.ts quand je place secure en dernier j'ai une erreur que je n'ai pas en el placant en premier.
+dans `server\routes\user.routes.ts` pour utiliser le middleware **loginUser** quand il y a une demande POST a l'URL /login
 
 ## Erreur rencontré

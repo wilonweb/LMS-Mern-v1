@@ -33,10 +33,12 @@ interface IRegistrationBody {
 export const registrationUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { name, email, password } = req.body; // extrait les donnée entré dans le client
-
-      const isEmailExist = await userModel.findOne({ email }); // verifie si l'email existe depuis user.model.ts
+      // extrait les donnée entré dans le client
+      const { name, email, password } = req.body;
+      // verifie si l'email existe depuis user.model.ts
+      const isEmailExist = await userModel.findOne({ email });
       if (isEmailExist) {
+        //Si il existe retourne une erreur
         return next(new ErrorHandler("Email already exist", 400));
       }
 
@@ -47,9 +49,10 @@ export const registrationUser = CatchAsyncError(
         password,
       };
 
-      const activationToken = createActivationToken(user); // Génère le token depuis l'objet user
+      // Génère le token depuis l'objet user
+      const activationToken = createActivationToken(user);
 
-      const activationCode = activationToken.activationCode; //
+      const activationCode = activationToken.activationCode;
 
       const data = { user: { name: user.name }, activationCode }; // creation de l'objet data avec les infromation utilisateur et le code d'activation
       const html = await ejs.renderFile(
@@ -107,7 +110,6 @@ interface IActivationRequest {
   activation_token: string;
   activation_code: string;
 }
-
 export const activateUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -154,29 +156,38 @@ interface ILoginRequest {
   email: string;
   password: string;
 }
-
+// Exporte la fonction loginUser en tant que middleware pour gérer les demandes de connexion d'utilisateur
 export const loginUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // Extraction des valeurs d'email et de mot de passe à partir du corps de la demande (req.body)
       const { email, password } = req.body as ILoginRequest;
-
+      // Vérification si email ou mot de passe est manquant
       if (!email || !password) {
+        // Si l'un des champs est manquant, génère une erreur 400 (Bad Request) avec un message d'erreur
         return next(new ErrorHandler("Invalid email or password", 400));
       }
 
+      // Recherche d'un utilisateur dans la base de données par son adresse e-mail
       const user = await userModel.findOne({ email }).select("+password");
 
+      // Si aucun utilisateur est trouvé
       if (!user) {
+        // Si aucun utilisateur n'est trouvé, génère une erreur 400 avec un message d'erreur
         return next(new ErrorHandler("Invalid email or password", 400));
       }
 
+      // Vérification si le mot de passe fourni correspond au mot de passe stocké pour cet utilisateur
       const isPasswordMatch = await user.comparePassword(password);
       if (!isPasswordMatch) {
+        // Si les mots de passe ne correspondent pas, génère une erreur 400 avec un message d'erreur
         return next(new ErrorHandler("Invalid email or password", 400));
       }
 
+      // Si tout est correct jusqu'à présent, envoie un token à l'utilisateur
       sendToken(user, 200, res);
     } catch (error: any) {
+      // Gestion des erreurs : Si une erreur inattendue se produit, génère une erreur 400 avec le message d'erreur de l'exception
       return next(new ErrorHandler(error.message, 400));
     }
   }
